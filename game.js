@@ -25,7 +25,6 @@ const gameState = {
     height: 40,
     color: 'pink',
   },
-  gameOver: false,
   loveFound: false,
 };
 
@@ -45,7 +44,6 @@ canvas.addEventListener('touchmove', (e) => {
     const currentTouchX = e.touches[0].clientX - canvas.offsetLeft;
     const currentTouchY = e.touches[0].clientY - canvas.offsetTop;
 
-    // Calcular el desplazamiento del toque
     const dx = currentTouchX - lastTouch.x;
     const dy = currentTouchY - lastTouch.y;
 
@@ -93,38 +91,19 @@ function checkCollision() {
   const distance = Math.sqrt((playerX - loveX) ** 2 + (playerY - loveY) ** 2);
   if (distance < (gameState.player.width / 2 + gameState.love.width / 2)) {
     gameState.loveFound = true;
-    gameState.gameOver = true;
+    window.location.href = 'amor.html'; // Redirige a la página del mensaje
   }
-}
-
-// Mostrar el corazón y el mensaje final
-function displayHeartMessage() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Dibujar un gran corazón en el centro del canvas
-  ctx.fillStyle = "red";
-  ctx.beginPath();
-  ctx.arc(canvas.width / 2, canvas.height / 2, 100, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Dibujar el mensaje encima del corazón
-  ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
-  const message = "¡Has encontrado el amor!";
-  ctx.fillText(message, canvas.width / 2 - ctx.measureText(message).width / 2, canvas.height / 2 - 120);
 }
 
 // Bucle principal del juego
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if (!gameState.gameOver) {
+  if (!gameState.loveFound) {
     drawPlayer();
     drawLove();
     checkCollision();
     requestAnimationFrame(gameLoop);
-  } else if (gameState.loveFound) {
-    displayHeartMessage();
   }
 }
 
