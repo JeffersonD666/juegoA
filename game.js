@@ -94,16 +94,24 @@ function checkCollision() {
   if (distance < (gameState.player.width / 2 + gameState.love.width / 2)) {
     gameState.loveFound = true;
     gameState.gameOver = true;
-    displayMessage("¡Has encontrado el amor!");
   }
 }
 
-// Mostrar mensaje final
-function displayMessage(message) {
+// Mostrar el corazón y el mensaje final
+function displayHeartMessage() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "black";
+
+  // Dibujar un gran corazón en el centro del canvas
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, 100, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Dibujar el mensaje encima del corazón
+  ctx.fillStyle = "white";
   ctx.font = "30px Arial";
-  ctx.fillText(message, canvas.width / 2 - ctx.measureText(message).width / 2, canvas.height / 2);
+  const message = "¡Has encontrado el amor!";
+  ctx.fillText(message, canvas.width / 2 - ctx.measureText(message).width / 2, canvas.height / 2 - 120);
 }
 
 // Bucle principal del juego
@@ -115,6 +123,8 @@ function gameLoop() {
     drawLove();
     checkCollision();
     requestAnimationFrame(gameLoop);
+  } else if (gameState.loveFound) {
+    displayHeartMessage();
   }
 }
 
