@@ -25,6 +25,12 @@ const gameState = {
     height: 40,
     color: 'pink',
   },
+  barriers: [
+    { x: 200, y: 100, width: 400, height: 20 },
+    { x: 200, y: 300, width: 20, height: 200 },
+    { x: 400, y: 400, width: 200, height: 20 },
+    { x: 600, y: 200, width: 20, height: 200 },
+  ],
   loveFound: false,
 };
 
@@ -80,6 +86,26 @@ function drawLove() {
   ctx.fill();
 }
 
+// Función para dibujar las barreras
+function drawBarriers() {
+  ctx.fillStyle = 'gray';
+  gameState.barriers.forEach(barrier => {
+    ctx.fillRect(barrier.x, barrier.y, barrier.width, barrier.height);
+  });
+}
+
+// Verificar si el jugador colisiona con una barrera
+function checkBarrierCollision() {
+  return gameState.barriers.some(barrier => {
+    return (
+      gameState.player.x < barrier.x + barrier.width &&
+      gameState.player.x + gameState.player.width > barrier.x &&
+      gameState.player.y < barrier.y + barrier.height &&
+      gameState.player.y + gameState.player.height > barrier.y
+    );
+  });
+}
+
 // Verificar si el jugador ha alcanzado el corazón
 function checkCollision() {
   const playerX = gameState.player.x + gameState.player.width / 2;
@@ -102,6 +128,14 @@ function gameLoop() {
   if (!gameState.loveFound) {
     drawPlayer();
     drawLove();
+    drawBarriers();
+
+    if (checkBarrierCollision()) {
+      // Si colisiona con una barrera, regresar al punto inicial
+      gameState.player.x = 50;
+      gameState.player.y = 500;
+    }
+
     checkCollision();
     requestAnimationFrame(gameLoop);
   }
